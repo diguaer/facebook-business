@@ -1,0 +1,29 @@
+{
+    "name": "fanxi/facebook-business",
+    "description": "facebook business object",
+    "autoload": {
+        "psr-4": {
+            "FacebookBusiness\\": "src/",
+            "Test\\": "test/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "hlq",
+            "email": "hlqscmy@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
+        ,
+        "phpunit/phpunit": "^9.5"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.4",
+        "php-di/php-di": "^6.4",
+        "vlucas/phpdotenv": "^5.4"
+    }
+}
