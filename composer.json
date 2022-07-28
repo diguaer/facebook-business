@@ -1,5 +1,5 @@
 {
-    "name": "fanxi/facebook-business",
+    "name": "diguaer/facebook-business",
     "description": "facebook business object",
     "autoload": {
         "psr-4": {
