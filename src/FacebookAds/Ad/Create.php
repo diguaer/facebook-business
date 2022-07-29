@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\Campaign;
+namespace FacebookBusiness\FacebookAds\Ad;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,46 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 广告系列列表
+ * 创建广告
  */
-class GetList extends BaseParameters implements ApiInterface
+class Create extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 广告组id
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $adSetId;
+
+	/**
+	 * 名称
+	 * @var string
+	 */
+	public string $name;
+
+	/**
+	 * 追踪事件
+	 * @var array|null
+	 */
+	public array|null $trackingSpecs;
+
+	/**
+	 * 广告创意
+	 * @var array
+	 */
+	public array $creative;
+
+	/**
+	 * 广告的出价金额
+	 * @var int
+	 */
+	public int $bidAmount;
+
+	/**
+	 * 网域追踪的域名
+	 * @var string
+	 */
+	public string $conversionDomain;
 
 	/**
 	 * 参数
@@ -29,18 +59,25 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-		if (0 === $this->limit) {
-
-			$this->limit = 100;
-		}
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
 			'access_token' => $this->accessToken,
-			'limit' => $this->limit
+			'adset_id' => $this->adSetId,
+			'name' => $this->name,
+			'status' => $this->status,
+			'tracking_specs' => $this->trackingSpecs,
+			'creative' => $this->creative
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if ($this->bidAmount > 0) {
+
+			$params['bid_amount'] = $this->bidAmount;
+		}
+
+		if ($this->conversionDomain) {
+
+			$params['conversion_domain'] = $this->conversionDomain;
+		}
 
 		return new Parameters($params);
 	}
@@ -51,7 +88,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->adAccountId . '/campaigns';
+		return '/' . $this->adAccountId . '/ads';
 	}
 
 	/**
@@ -60,7 +97,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -74,7 +111,6 @@ class GetList extends BaseParameters implements ApiInterface
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

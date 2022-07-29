@@ -1,6 +1,5 @@
 <?php
-
-namespace FacebookBusiness\FacebookAds\Campaign;
+namespace FacebookBusiness\FacebookAds\Ad;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +11,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 广告系列列表
+ * 帖子详情
  */
-class GetList extends BaseParameters implements ApiInterface
+class PostsDetail extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 广告id
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $postsId = '';
 
 	/**
 	 * 参数
@@ -29,20 +28,10 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-		if (0 === $this->limit) {
-
-			$this->limit = 100;
-		}
-
-		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
+		return new Parameters([
 			'access_token' => $this->accessToken,
-			'limit' => $this->limit
-		];
-
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
-
-		return new Parameters($params);
+			'fields' => !empty($this->fields) ? $this->fields : '["actions","application","attachments{description,description_tags,media,media_type,subattachments,target,title,type,unshimmed_url,url}","call_to_action","comments.summary(true).limit(0)","coordinates","created_time","expanded_height","expanded_width","feed_targeting","from","full_picture","height","icon","id","instagram_eligibility","is_hidden","is_instagram_eligible","is_popular","is_published","is_spherical","likes.summary(true)","message_tags","message","parent_id","picture","place","privacy","promotable_id","promotion_status","properties","scheduled_publish_time","shares","status_type","story_tags","story","subscribed","targeting","timeline_visibility","to","updated_time","via","video_buying_eligibility","width","with_tags","sponsor_tags"]'
+		]);
 	}
 
 	/**
@@ -51,7 +40,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->adAccountId . '/campaigns';
+		return '/' . $this->postsId;
 	}
 
 	/**

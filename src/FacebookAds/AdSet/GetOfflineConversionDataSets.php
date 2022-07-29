@@ -1,6 +1,5 @@
 <?php
-
-namespace FacebookBusiness\FacebookAds\Campaign;
+namespace FacebookBusiness\FacebookAds\AdSet;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,35 +11,24 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 广告系列列表
+ * 获取线下事件转化集
  */
-class GetList extends BaseParameters implements ApiInterface
+class GetOfflineConversionDataSets extends BaseParameters implements ApiInterface
 {
-
-	/**
-	 * 广告系列id
-	 * @var string
-	 */
-	public string $campaignId = '';
-
 	/**
 	 * 参数
 	 * @return Parameters
 	 */
 	public function parameters(): Parameters
 	{
-		if (0 === $this->limit) {
-
-			$this->limit = 100;
-		}
-
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
-			'access_token' => $this->accessToken,
-			'limit' => $this->limit
+			'access_token' => $this->accessToken
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if ($this->limit > 0) {
+
+			$params['limit'] = $this->limit;
+		}
 
 		return new Parameters($params);
 	}
@@ -51,7 +39,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->adAccountId . '/campaigns';
+		return '/' . $this->adAccountId . '/offline_conversion_data_sets';
 	}
 
 	/**

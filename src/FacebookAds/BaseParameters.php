@@ -18,6 +18,12 @@ class BaseParameters
 	public string $adAccountId = '';
 
 	/**
+	 * 主页id
+	 * @var string
+	 */
+	public string $pageId = '';
+
+	/**
 	 * 状态
 	 * @var string
 	 */
@@ -51,7 +57,7 @@ class BaseParameters
 	 * 分页条数
 	 * @var int
 	 */
-	public int $limit = 500;
+	public int $limit = 0;
 
 	/**
 	 * 上一页
@@ -64,5 +70,36 @@ class BaseParameters
 	 * @var string
 	 */
 	public string $after = '';
+
+	/**
+	 * 验证并设置列表默认参数
+	 * @return array
+	 */
+	public function setDefaultListParamsByVerify(): array
+	{
+		$params = [];
+
+		if (!empty($this->before)) {
+
+			$params['before'] = $this->before;
+		}
+
+		if (!empty($this->after)) {
+
+			$params['after'] = $this->after;
+		}
+
+		if (!empty($this->keyword)) {
+
+			$params['filtering'] = [["field" => "name", "operator" => "CONTAIN", "value" => $this->keyword]];
+		}
+
+		if (!empty($this->filtering)) {
+
+			$params['filtering'] = array_merge($this->filtering, $params['filtering'] ?? []);
+		}
+
+		return $params;
+	}
 
 }

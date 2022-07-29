@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\Campaign;
+namespace FacebookBusiness\FacebookAds\Ad;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 广告系列列表
+ * 创建广告创意
  */
-class GetList extends BaseParameters implements ApiInterface
+class CreateCreative extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
-	 * @var string
+	 * 广告创意
+	 * @var array
 	 */
-	public string $campaignId = '';
+	public array $creative;
 
 	/**
 	 * 参数
@@ -29,18 +29,17 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-		if (0 === $this->limit) {
-
-			$this->limit = 100;
-		}
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
 			'access_token' => $this->accessToken,
-			'limit' => $this->limit
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		foreach ($this->creative as $key => $value) {
+
+			$params[$key] = $value;
+		}
+
+		unset($params['ad_creative_Id'], $params['ad_account_Id'], $params['deleted'], $params['created_at'], $params['updated_at'], $params['enable_direct_install']);
 
 		return new Parameters($params);
 	}
@@ -51,7 +50,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->adAccountId . '/campaigns';
+		return '/' . $this->adAccountId . '/adcreatives';
 	}
 
 	/**
@@ -60,7 +59,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -74,7 +73,6 @@ class GetList extends BaseParameters implements ApiInterface
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\Campaign;
+namespace FacebookBusiness\FacebookAds\AdSet;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,9 +12,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 广告系列列表
+ * 查询广告系列下的广告组
  */
-class GetList extends BaseParameters implements ApiInterface
+class GetListByCampaign extends BaseParameters implements ApiInterface
 {
 
 	/**
@@ -35,7 +35,7 @@ class GetList extends BaseParameters implements ApiInterface
 		}
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
+			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
 			'limit' => $this->limit
 		];
@@ -51,7 +51,7 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->adAccountId . '/campaigns';
+		return '/' . $this->campaignId . '/adsets';
 	}
 
 	/**

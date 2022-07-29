@@ -118,6 +118,17 @@ class Request implements RequestInterface
 	}
 
 	/**
+	 * 请求接口
+	 * @return $this
+	 */
+	public function setBaseUrl(): Request
+	{
+		$this->url = $this->config['fb_api_host'];
+
+		return $this;
+	}
+
+	/**
 	 * 设置接口参数
 	 * @param array $data
 	 * @return $this

@@ -130,20 +130,29 @@ function getHostTopDomain(string $url = null): string
 
 	// 查看是几级域名
 	$data = explode('.', $host);
+
 	$n = count($data);
+
+	if (!in_array($data[$n - 1], ['com', 'cn', 'net', 'org', 'gov', 'edu'])) {
+
+		return '';
+	}
+
 	// 判断是否是双后缀
 	$preg = '/[\w].+\.(com|net|org|gov|edu)\.cn$/';
+
 	// 双后缀取后3位
 	if (($n > 2) && preg_match($preg, $host)) {
 
-		$host = $data[$n - 3] . '.' . $data[$n - 2] . '.' . $data[$n - 1];
+		return $data[$n - 3] . '.' . $data[$n - 2] . '.' . $data[$n - 1];
 	} // 非双后缀取后两位
-	else {
 
-		$host = $data[$n - 2] . '.' . $data[$n - 1];
+	if (!isset($data[$n - 2], $data[$n - 1])) {
+
+		return '';
 	}
 
-	return $host;
+	return $data[$n - 2] . '.' . $data[$n - 1];
 }
 
 if (! function_exists('env')) {
