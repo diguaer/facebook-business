@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\FacebookAdsTests\Object;
+namespace Test\FacebookAdsTests\Object\Common;
 
 use FacebookBusiness\FacebookAds\Common\BatchUpdateStatus;
 use PHPUnit\Framework\TestCase;

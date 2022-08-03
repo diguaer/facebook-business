@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\FacebookAdsTests\Object;
+namespace Test\FacebookAdsTests\Object\Campaign;
 
 use FacebookBusiness\FacebookAds\Campaign\Detail;
 use PHPUnit\Framework\TestCase;
