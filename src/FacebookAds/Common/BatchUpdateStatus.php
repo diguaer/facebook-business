@@ -73,6 +73,7 @@ class BatchUpdateStatus  extends BaseParameters implements ApiInterface {
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setBaseUrl()
+			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
 			->setRequestJson(false)
 			->execute();

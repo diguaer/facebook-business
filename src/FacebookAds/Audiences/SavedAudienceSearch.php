@@ -1,6 +1,5 @@
 <?php
-
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +11,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 搜索保存受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class SavedAudienceSearch extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 保存受众名称
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $filterName = '';
 
 	/**
 	 * 参数
@@ -31,12 +30,17 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+			'sort' => 'time_created_descending',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'fields' => !empty($this->fields) ? $this->fields : '["id","name","subtype","description","targeting","approximate_count_lower_bound","approximate_count_upper_bound","sentence_lines","permission_for_actions"]'
 		];
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+
+		if ($this->filterName) {
+
+			$params['filtering'] = '[{"field":"name","operator":"CONTAIN","value":"' . $this->filterName . '"}]';
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +51,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/saved_audiences';
 	}
 
 	/**

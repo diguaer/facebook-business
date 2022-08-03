@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Material;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,15 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 删除图片素材
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class DeleteAdImage extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 图片hash
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $hash;
 
 	/**
 	 * 参数
@@ -31,12 +30,9 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'hash' => $this->hash
 		];
-
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
 		return new Parameters($params);
 	}
@@ -47,7 +43,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/adimages';
 	}
 
 	/**
@@ -56,7 +52,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_DELETE;
 	}
 
 	/**
@@ -69,7 +65,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
-			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
 			->setRequestJson(false)
 			->execute();

@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Material;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,21 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 将图片从一个广告账号复制到另一个广告账号（同一个fb授权的数据情况下）
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class CopyAdImage extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 源广告账号id(去掉act_的id)
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $sourceAccountId;
+
+	/**
+	 * 要拷贝的源广告账号的图片hash
+	 * @var string
+	 */
+	public string $hash;
 
 	/**
 	 * 参数
@@ -31,12 +36,12 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'copy_from' => [
+				'source_account_id' => $this->sourceAccountId,
+				'hash' => $this->hash
+			]
 		];
-
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
 		return new Parameters($params);
 	}
@@ -47,7 +52,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/adimages';
 	}
 
 	/**
@@ -56,7 +61,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -69,9 +74,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
-			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

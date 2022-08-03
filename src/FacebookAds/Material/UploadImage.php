@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Material;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,22 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 上传图片素材
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class UploadImage extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 图片字节流
+	 * $bytes = imgUrlToBase64($bytes)
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $bytes;
+
+	/**
+	 * 图片名称
+	 * @var string
+	 */
+	public string $name;
 
 	/**
 	 * 参数
@@ -31,12 +37,23 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+			'bytes' => $this->bytes,
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'endpoint' => '/' . $this->adAccountId . '/adimages',
+			//'encoding' => 'data:image/jpeg;base64',
+			//'height' => 500,
+			//'width' => 500
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if (!empty($this->name)) {
+
+			$params['name'] = $this->name;
+		}
+
+		if (!empty($this->hashes)) {
+
+			$params['hashes'] = $this->hashes;
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +64,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/adimages';
 	}
 
 	/**
@@ -56,7 +73,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -69,7 +86,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
-			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
 			->setRequestJson(false)
 			->execute();

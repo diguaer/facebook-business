@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,22 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 细分定位搜索
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class TargetingSearch extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 关键字
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $q = '';
+
+	/**
+	 * 是否排除，false：否，true：是
+	 * @var bool
+	 */
+	public bool $isExclusion = false;
 
 	/**
 	 * 参数
@@ -29,11 +35,17 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
+		if (empty($this->fields)) {
+
+			$this->fields = '["raw_name","id","name","type","path","audience_size_lower_bound","audience_size_upper_bound","description","valid","source","partner","performance_rating","spend","conversion_lift","is_recommendation","recommendation_model","search_interest_id"]';
+		}
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'q' => $this->q,
+			'limit' => $this->getDefaultLimit(),
+			'fields' => $this->fields,
+			'is_exclusion' => $this->isExclusion
 		];
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
@@ -47,7 +59,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/targetingsearch';
 	}
 
 	/**

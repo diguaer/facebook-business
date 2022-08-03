@@ -1,10 +1,11 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
+use FacebookBusiness\FacebookAds\Enum\AdEnum;
 use FacebookBusiness\FacebookAds\Parameters;
 use FacebookBusiness\Http\Constant;
 use FacebookBusiness\Http\Request;
@@ -12,31 +13,44 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 兴趣，行为，人口统计元数据获取或校验
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class TargetingValidation extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
-	 * @var string
+	 * 查询的数据列表
+	 * $targetingList = [
+	 *      [
+	 *          'type' => '定位参数类型',
+	 *          'id' => '定位参数id'
+	 *      ],
+	 * ......
+	 * ]
+	 * @var array
 	 */
-	public string $campaignId = '';
+	public array $targetingList;
 
 	/**
 	 * 参数
 	 * @return Parameters
+	 * @throws BusinessException
 	 */
 	public function parameters(): Parameters
 	{
 
-		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
-			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
-		];
+		foreach ($this->targetingList as $item) {
+			if (!empty($item['type']) || !in_array($item["type"], AdEnum::TARGETING_VALIDATION_TYPES, true)) {
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+				throw new BusinessException('资源类型异常', 90003);
+			}
+		}
+
+		$params = [
+			'access_token' => $this->accessToken,
+			'type' => 'targetingvalidation',
+			'targeting_list' => $this->targetingList
+		];
 
 		return new Parameters($params);
 	}
@@ -47,7 +61,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/targetingvalidation';
 	}
 
 	/**

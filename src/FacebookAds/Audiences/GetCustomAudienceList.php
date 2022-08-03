@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,9 +12,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 获取广告账户下自定义受众列表
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class GetCustomAudienceList extends BaseParameters implements ApiInterface
 {
 
 	/**
@@ -31,7 +31,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+			'fields' => !empty($this->fields) ? $this->fields : 'data_source,name,subtype,approximate_count_lower_bound,approximate_count_upper_bound,time_updated,time_created,shared_account_info,sharing_status,description,permission_for_actions,opt_out_link,lookalike_spec,operation_status,regulated_audience_spec',
 			'access_token' => $this->accessToken,
 			'limit' => $this->getDefaultLimit()
 		];
@@ -47,7 +47,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/customaudiences';
 	}
 
 	/**

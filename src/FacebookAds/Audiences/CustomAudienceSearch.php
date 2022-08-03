@@ -1,6 +1,5 @@
 <?php
-
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +11,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 搜索自定义受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class CustomAudienceSearch extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 受众id
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $type = '';
 
 	/**
 	 * 参数
@@ -31,12 +30,22 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'fields' => !empty($this->fields) ? $this->fields : '["id","name","subtype","description","rule","origin_audience_id","targeting","approximate_count_64bit","approximate_count_lower_bound","approximate_count_upper_bound","is_sharing_agreement_needed","sentence_lines","permission_for_actions","targeting_status","shared_account_info"]'
 		];
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+
+		/**
+		 * 类似受众价值来源列表不需要显示类似受众
+		 */
+		if ('source_list' === $this->type) {
+
+			$params['filtering'] = '[{"field":"subtype","operator":"NOT_EQUAL","value":"LOOKALIKE"}]';
+		} elseif ($this->keyword) {
+
+			$params['filtering'] = '[{"field":"name","operator":"NOT_EQUAL","value":"' . $this->keyword . '"}]';
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +56,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/customaudiences';
 	}
 
 	/**

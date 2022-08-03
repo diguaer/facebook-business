@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Material;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,22 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 获取素材图片
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class GetAdImagesList extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 素材名称
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $name = '';
+
+	/**
+	 * 图片hash
+	 * [hash1,hash2,......]
+	 * @var array
+	 */
+	public array $hashes = [];
 
 	/**
 	 * 参数
@@ -31,10 +37,20 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+			'fields' => !empty($this->fields) ? $this->fields : 'account_id,name,permalink_url,status,hash,width,height,url_128',
 			'access_token' => $this->accessToken,
 			'limit' => $this->getDefaultLimit()
 		];
+
+		if (!empty($this->name)) {
+
+			$params['name'] = $this->name;
+		}
+
+		if (!empty($this->hashes)) {
+
+			$params['hashes'] = $this->hashes;
+		}
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
@@ -47,7 +63,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/adimages';
 	}
 
 	/**

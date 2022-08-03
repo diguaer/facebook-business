@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,45 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 修改自定义受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class UpdateCustomAudiences extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 受众id
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $audienceId;
+
+	/**
+	 * 名称
+	 * @var string
+	 */
+	public string $name;
+
+	/**
+	 * 规则
+	 * @var array
+	 */
+	public array $rule;
+
+	/**
+	 * true：包括创建受众前记录的网站活动 false：仅包含创建受众后的网站流量
+	 * @var bool
+	 */
+	public bool $prefill;
+
+	/**
+	 * 说明
+	 * @var int
+	 */
+	public int $description;
+
+	/**
+	 * 转化率 1--180
+	 * @var int
+	 */
+	public int $retentionDays;
 
 	/**
 	 * 参数
@@ -31,12 +60,17 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'name' => $this->name,
+			'rule' => $this->rule,
+			'prefill' => $this->prefill,
+			'description' => $this->description
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if ($this->retentionDays > 0) {
+
+			$params['retention_days'] = (string)$this->retentionDays;
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +81,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->audienceId;
 	}
 
 	/**
@@ -56,7 +90,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -71,7 +105,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 			->setUrl($this->apiPath())
 			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

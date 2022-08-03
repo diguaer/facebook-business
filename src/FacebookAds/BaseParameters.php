@@ -2,6 +2,8 @@
 
 namespace FacebookBusiness\FacebookAds;
 
+use FacebookBusiness\FacebookAds\Enum\AdEnum;
+
 class BaseParameters
 {
 
@@ -70,6 +72,26 @@ class BaseParameters
 	 * @var string
 	 */
 	public string $after = '';
+
+	/**
+	 * 语言
+	 * @var string
+	 */
+	public string $locale = AdEnum::LANGUAGE_ZH_CN;
+
+	/**
+	 * 获取默认分页条数
+	 * @return int
+	 */
+	public function getDefaultLimit(): int
+	{
+		if (0 >= $this->limit) {
+
+			$this->limit = 100;
+		}
+
+		return $this->limit;
+	}
 
 	/**
 	 * 验证并设置列表默认参数

@@ -1,6 +1,5 @@
 <?php
-
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +11,22 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 广告组获取预估受众信息
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class GetEstimateAudiences extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 目标规格
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $targetingSpec;
+
+	/**
+	 * 优化目标
+	 * @var string
+	 */
+	public string $optimizationGoal;
 
 	/**
 	 * 参数
@@ -29,16 +34,12 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-
-		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+		return new Parameters([
+			'ad_account_Id' => $this->adAccountId,
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
-		];
-
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
-
-		return new Parameters($params);
+			'targeting_spec' => $this->targetingSpec,
+			'optimization_goal' => $this->optimizationGoal
+		]);
 	}
 
 	/**
@@ -47,7 +48,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/delivery_estimate';
 	}
 
 	/**

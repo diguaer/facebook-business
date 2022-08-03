@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,34 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 创建类似受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class CreateSimilarAudiences extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 名称
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $name;
+
+	/**
+	 * 详情参数
+	 * @var array
+	 */
+	public array $lookalikeSpec;
+
+	/**
+	 * 类型，LOOKALIKE：类似受众
+	 * @var string
+	 */
+	public string $subtype;
+
+	/**
+	 * 为自定义类似受众时，必传，自定义受众id
+	 * @var string
+	 */
+	public string $originAudienceId;
 
 	/**
 	 * 参数
@@ -31,12 +49,16 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'name' => $this->name,
+			'subtype' => $this->subtype,
+			'lookalike_spec' => $this->lookalikeSpec
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if (!empty($this->originAudienceId)) {
+
+			$params['origin_audience_id'] = $this->originAudienceId;
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +69,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/customaudiences';
 	}
 
 	/**
@@ -56,7 +78,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -71,7 +93,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 			->setUrl($this->apiPath())
 			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

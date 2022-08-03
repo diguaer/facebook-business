@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Material;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,15 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 获取素材图片
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class GetAdVideoList extends BaseParameters implements ApiInterface
 {
-
 	/**
-	 * 广告系列id
+	 * 视频名称
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $title = '';
 
 	/**
 	 * 参数
@@ -31,10 +30,15 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
+			'fields' => !empty($this->fields) ? $this->fields : 'account_id,picture,title,image,image_url,source,status,created_time',
 			'access_token' => $this->accessToken,
 			'limit' => $this->getDefaultLimit()
 		];
+
+		if (!empty($this->title)) {
+
+			$params['title'] = $this->title;
+		}
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
@@ -47,7 +51,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId . '/advideos';
 	}
 
 	/**

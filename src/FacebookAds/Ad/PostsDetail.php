@@ -62,6 +62,7 @@ class PostsDetail extends BaseParameters implements ApiInterface
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
+			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
 			->setRequestJson(false)
 			->execute();

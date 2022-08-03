@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,16 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 搜索共享受众账号
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class AudienceSharingAccountValid extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 搜索的广告账号
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $recipientAdAccountId = '';
 
 	/**
 	 * 参数
@@ -29,11 +29,15 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
+		if (empty($this->fields)) {
+
+			$this->fields = '["account_id","account_type","business_id","business_name","sharing_agreement_status","can_ad_account_use_lookalike_container"]';
+		}
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'fields' => $this->fields,
+			'recipient_adaccount' => $this->recipientAdAccountId
 		];
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
@@ -47,7 +51,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->adAccountId .'/audiencesharing_accountvalid';
 	}
 
 	/**

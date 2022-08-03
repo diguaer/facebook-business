@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,28 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 分享受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class ShareAudience extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 受众id
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $audienceId = '';
+
+	/**
+	 * 分享的广告账号id ["610131523336893", "610131523336893", ……]
+	 * @var array
+	 */
+	public array $adAccounts;
+
+	/**
+	 * 类型
+	 * @var string
+	 */
+	public string $relationshipType = '';
 
 	/**
 	 * 参数
@@ -29,14 +41,15 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'adaccounts' => $this->adAccounts
 		];
 
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
+		if (empty($this->relationshipType)) {
+
+			$params['relationship_type'] = '["Information Manager"]';
+		}
 
 		return new Parameters($params);
 	}
@@ -47,7 +60,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->audienceId .'/adaccounts';
 	}
 
 	/**
@@ -56,7 +69,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -71,7 +84,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 			->setUrl($this->apiPath())
 			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

@@ -29,15 +29,11 @@ class GetList extends BaseParameters implements ApiInterface
 	 */
 	public function parameters(): Parameters
 	{
-		if (0 === $this->limit) {
-
-			$this->limit = 100;
-		}
 
 		$params = [
 			'fields' => !empty($this->fields) ? $this->fields : 'name,account_id,objective,status,spend_cap,pacing_type,daily_budget,lifetime_budget,buying_type,special_ad_categories',
 			'access_token' => $this->accessToken,
-			'limit' => $this->limit
+			'limit' => $this->getDefaultLimit()
 		];
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
@@ -73,6 +69,7 @@ class GetList extends BaseParameters implements ApiInterface
 		$request = new Request();
 		return $request->setMethod($this->method())
 			->setUrl($this->apiPath())
+			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
 			->setRequestJson(false)
 			->execute();

@@ -1,10 +1,11 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
+use FacebookBusiness\FacebookAds\Enum\AdEnum;
 use FacebookBusiness\FacebookAds\Parameters;
 use FacebookBusiness\Http\Constant;
 use FacebookBusiness\Http\Request;
@@ -12,29 +13,52 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 地址位置源数据详情搜索
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class GeoLocationMetaSearch extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
-	 * @var string
+	 * 搜索条件，[{"countries":["US","JP"]},{"cities":[2418779]},......]
+	 * @var array
 	 */
-	public string $campaignId = '';
+	public array $search;
 
 	/**
 	 * 参数
 	 * @return Parameters
+	 * @throws BusinessException
 	 */
 	public function parameters(): Parameters
 	{
-
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'type' => 'adgeolocationmeta',
+			'limit' => $this->getDefaultLimit(),
+			'place_fallback' => true
 		];
+
+		if (!empty($this->search)) {
+
+			foreach ($this->search as $types) {
+
+				foreach ($types as $key => $value) {
+
+					if (!array_key_exists($key, AdEnum::Ad_GEO_LOCATION_META_KEYS)) {
+
+						throw new BusinessException('参数错误', 90001);
+					}
+
+					if (!is_array($value)) {
+
+						throw new BusinessException('参数值必须为数组', 90002);
+					}
+
+					$params[$key] = $value;
+				}
+
+			}
+		}
 
 		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
@@ -47,7 +71,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/search';
 	}
 
 	/**

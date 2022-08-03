@@ -1,6 +1,6 @@
 <?php
 
-namespace FacebookBusiness\FacebookAds\AdSet;
+namespace FacebookBusiness\FacebookAds\Audiences;
 
 use FacebookBusiness\Exception\BusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
@@ -12,16 +12,28 @@ use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
 /**
- * 查询广告系列下的广告组
+ * 修改类似受众
  */
-class GetListByCampaign extends BaseParameters implements ApiInterface
+class UpdateSimilarAudiences extends BaseParameters implements ApiInterface
 {
 
 	/**
-	 * 广告系列id
+	 * 名称
 	 * @var string
 	 */
-	public string $campaignId = '';
+	public string $name;
+
+	/**
+	 * 受众id
+	 * @var string
+	 */
+	public string $audienceId;
+
+	/**
+	 * 描述
+	 * @var string
+	 */
+	public string $description;
 
 	/**
 	 * 参数
@@ -31,12 +43,10 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	{
 
 		$params = [
-			'fields' => !empty($this->fields) ? $this->fields : 'name,targeting',
 			'access_token' => $this->accessToken,
-			'limit' => $this->getDefaultLimit()
+			'name' => $this->name,
+			'description' => $this->description
 		];
-
-		$params = array_merge($params, $this->setDefaultListParamsByVerify());
 
 		return new Parameters($params);
 	}
@@ -47,7 +57,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function apiPath(): string
 	{
-		return '/' . $this->campaignId . '/adsets';
+		return '/' . $this->audienceId;
 	}
 
 	/**
@@ -56,7 +66,7 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 	 */
 	public function method(): string
 	{
-		return Constant::HTTP_GET;
+		return Constant::HTTP_POST;
 	}
 
 	/**
@@ -71,7 +81,6 @@ class GetListByCampaign extends BaseParameters implements ApiInterface
 			->setUrl($this->apiPath())
 			->setLanguage($this->locale)
 			->setApiData($this->parameters()->export())
-			->setRequestJson(false)
 			->execute();
 	}
 

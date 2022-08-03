@@ -1,7 +1,9 @@
 <?php
+
 namespace FacebookBusiness\FacebookAds\Enum;
 
-class AdEnum {
+class AdEnum
+{
 
 	/**
 	 * 受众
@@ -43,5 +45,74 @@ class AdEnum {
 	 */
 	public const DYNAMIC_CREATIVE_CLOSE = 0;
 
+	/**
+	 * 按国家/地区、国家/地区组、城市、州份、邮政编码及其他地理区域搜索目标
+	 */
+	public const AUDIENCE_SEARCH_TYPE_ADGEOLOCATION = 'adgeolocation';
+
+	/**
+	 * 语言-中文
+	 */
+	public const LANGUAGE_ZH_CN = 'zh_CN';
+
+	/**
+	 * 语言-英文
+	 */
+	public const LANGUAGE_EN_US = 'en_US';
+
+	/**
+	 * 地理位置源数据的数据源key值
+	 */
+	public const Ad_GEO_LOCATION_META_KEYS = [
+		'countries' => 'countries',
+		'regions' => 'regions',
+		'cities' => 'cities',
+		'zips' => 'zips',
+		'places' => 'places',
+		'custom_locations' => 'custom_locations',
+		'geo_markets' => 'geo_markets',
+		'electoral_districts' => 'electoral_districts',
+		'country_groups' => 'country_groups',
+		'subneighborhoods' => 'subneighborhoods',
+		'neighborhoods' => 'neighborhoods',
+		'subcities' => 'subcities',
+		'metro_areas' => 'metro_areas',
+		'small_geo_areas' => 'small_geo_areas',
+		'medium_geo_areas' => 'medium_geo_areas',
+		'large_geo_areas' => 'large_geo_areas',
+		'location_cluster_ids' => 'location_cluster_ids'
+	];
+
+	/**
+	 * 兴趣，行为，人口统计等数据源类型
+	 */
+	public const TARGETING_VALIDATION_TYPES = [
+		"interests",
+		"education_statuses",
+		"education_schools",
+		"education_majors",
+		"work_positions",
+		"work_employers",
+		"interested_in",
+		"relationship_statuses",
+		"college_years",
+		"family_statuses",
+		"industries",
+		"life_events",
+		"political_views",
+		"politics",
+		"behaviors",
+		"income",
+		"net_worth",
+		"home_type",
+		"home_ownership",
+		"home_value",
+		"ethnic_affinity",
+		"generation",
+		"household_composition",
+		"moms",
+		"office_type",
+		"user_adclusters",
+	];
 
 }
