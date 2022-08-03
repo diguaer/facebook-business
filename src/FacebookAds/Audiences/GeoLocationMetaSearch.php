@@ -2,7 +2,7 @@
 
 namespace FacebookBusiness\FacebookAds\Audiences;
 
-use FacebookBusiness\Exception\BusinessException;
+use FacebookBusiness\Exception\FBusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
 use FacebookBusiness\FacebookAds\Enum\AdEnum;
@@ -27,7 +27,7 @@ class GeoLocationMetaSearch extends BaseParameters implements ApiInterface
 	/**
 	 * 参数
 	 * @return Parameters
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 */
 	public function parameters(): Parameters
 	{
@@ -46,12 +46,12 @@ class GeoLocationMetaSearch extends BaseParameters implements ApiInterface
 
 					if (!array_key_exists($key, AdEnum::Ad_GEO_LOCATION_META_KEYS)) {
 
-						throw new BusinessException('参数错误', 90001);
+						throw new FBusinessException('参数错误', 90001);
 					}
 
 					if (!is_array($value)) {
 
-						throw new BusinessException('参数值必须为数组', 90002);
+						throw new FBusinessException('参数值必须为数组', 90002);
 					}
 
 					$params[$key] = $value;
@@ -85,7 +85,7 @@ class GeoLocationMetaSearch extends BaseParameters implements ApiInterface
 
 	/**
 	 * 获取数据
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 * @throws JsonException|GuzzleException
 	 */
 	public function requestExecute(): mixed

@@ -2,7 +2,7 @@
 
 namespace FacebookBusiness\FacebookAds\Audiences;
 
-use FacebookBusiness\Exception\BusinessException;
+use FacebookBusiness\Exception\FBusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
 use FacebookBusiness\FacebookAds\Enum\AdEnum;
@@ -40,7 +40,7 @@ class TargetingSuggestions extends BaseParameters implements ApiInterface
 	/**
 	 * 参数
 	 * @return Parameters
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 */
 	public function parameters(): Parameters
 	{
@@ -48,7 +48,7 @@ class TargetingSuggestions extends BaseParameters implements ApiInterface
 		foreach ($this->targetingList as $item) {
 			if (!empty($item['type']) || !in_array($item["type"], AdEnum::TARGETING_VALIDATION_TYPES, true)) {
 
-				throw new BusinessException('资源类型异常', 90003);
+				throw new FBusinessException('资源类型异常', 90003);
 			}
 		}
 
@@ -86,7 +86,7 @@ class TargetingSuggestions extends BaseParameters implements ApiInterface
 
 	/**
 	 * 获取数据
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 * @throws JsonException|GuzzleException
 	 */
 	public function requestExecute(): mixed

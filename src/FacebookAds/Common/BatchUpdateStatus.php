@@ -2,7 +2,7 @@
 namespace FacebookBusiness\FacebookAds\Common;
 
 use FacebookBusiness\ApiConfig;
-use FacebookBusiness\Exception\BusinessException;
+use FacebookBusiness\Exception\FBusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
 use FacebookBusiness\FacebookAds\Parameters;
@@ -65,7 +65,7 @@ class BatchUpdateStatus  extends BaseParameters implements ApiInterface {
 
 	/**
 	 * 删除数据
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 * @throws JsonException|GuzzleException
 	 */
 	public function requestExecute(): mixed

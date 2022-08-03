@@ -2,7 +2,7 @@
 
 namespace FacebookBusiness\FacebookAds\Audiences;
 
-use FacebookBusiness\Exception\BusinessException;
+use FacebookBusiness\Exception\FBusinessException;
 use FacebookBusiness\FacebookAds\ApiInterface;
 use FacebookBusiness\FacebookAds\BaseParameters;
 use FacebookBusiness\FacebookAds\Parameters;
@@ -71,7 +71,7 @@ class UpdateSimilarAudiences extends BaseParameters implements ApiInterface
 
 	/**
 	 * 获取数据
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 * @throws JsonException|GuzzleException
 	 */
 	public function requestExecute(): mixed

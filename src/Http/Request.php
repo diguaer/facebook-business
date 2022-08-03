@@ -5,7 +5,7 @@ namespace FacebookBusiness\Http;
 
 use FacebookBusiness\ApiConfig;
 use FacebookBusiness\ErrorCode\ErrorCodes;
-use FacebookBusiness\Exception\BusinessException;
+use FacebookBusiness\Exception\FBusinessException;
 use GuzzleHttp\Exception\GuzzleException;
 use JsonException;
 
@@ -324,7 +324,7 @@ class Request implements RequestInterface
 	 * @param $isException  true:抛异常  false:不抛异常
 	 * @param null $error
 	 * @return mixed
-	 * @throws BusinessException
+	 * @throws FBusinessException
 	 * @throws JsonException
 	 * @throws GuzzleException
 	 */
@@ -334,7 +334,7 @@ class Request implements RequestInterface
 		if (!empty($error)) {
 
 			if ($isException) {
-				throw new BusinessException($error, 21);
+				throw new FBusinessException($error, 21);
 			}
 
 			return false;
@@ -356,7 +356,7 @@ class Request implements RequestInterface
 
 		if (!$result) {
 
-			throw new BusinessException('接口请求错误', 500);
+			throw new FBusinessException('接口请求错误', 500);
 		}
 
 		if ($isException) {
@@ -378,7 +378,7 @@ class Request implements RequestInterface
 						$errorMsg = $result['error']['message'];
 					}
 
-					throw new BusinessException($errorMsg, $result['error']['code'] ?? 500);
+					throw new FBusinessException($errorMsg, $result['error']['code'] ?? 500);
 				}
 
 				return $result;
@@ -404,7 +404,7 @@ class Request implements RequestInterface
 
 					$code = (int)$errorSubCode === 200 ? 500 : $errorSubCode;
 				}
-				throw new BusinessException($this->getErrorMessage((int)$errorCode, (int)$errorSubCode, $message), $code);
+				throw new FBusinessException($this->getErrorMessage((int)$errorCode, (int)$errorSubCode, $message), $code);
 			}
 		} else {
 
