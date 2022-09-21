@@ -109,6 +109,12 @@ class Create extends BaseParameters implements ApiInterface
 	public int $isDynamicCreative = AdEnum::DYNAMIC_CREATIVE_CLOSE;
 
 	/**
+	 * 转化归因
+	 * @var array
+	 */
+	public array $attributionSpec;
+
+	/**
 	 * 格式化广告组参数
 	 * @param string $accessToken
 	 * @param string $campaignId
@@ -126,6 +132,7 @@ class Create extends BaseParameters implements ApiInterface
 	 * @param array $adSetSchedule
 	 * @param string $bidStrategy
 	 * @param int $isDynamicCreative
+	 * @param array $attributionSpec
 	 * @param string $status
 	 * @return array
 	 */
@@ -146,6 +153,7 @@ class Create extends BaseParameters implements ApiInterface
 		array  $adSetSchedule,
 		string $bidStrategy,
 		int    $isDynamicCreative,
+		array $attributionSpec,
 		string $status = ''
 	): array
 	{
@@ -235,6 +243,11 @@ class Create extends BaseParameters implements ApiInterface
 			$params['is_dynamic_creative'] = false;
 		}
 
+		if (!empty($attributionSpec)) {
+
+			$params['attribution_spec'] = $attributionSpec;
+		}
+
 		return $params;
 	}
 
@@ -262,6 +275,7 @@ class Create extends BaseParameters implements ApiInterface
 			$this->adSetSchedule,
 			$this->bidStrategy,
 			$this->isDynamicCreative,
+			$this->attributionSpec,
 			$this->status
 		);
 

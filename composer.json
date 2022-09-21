@@ -26,6 +26,7 @@
         "guzzlehttp/guzzle": "^7.4",
         "php-di/php-di": "^6.4",
         "vlucas/phpdotenv": "^5.4",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-json": "*"
     }
 }
